@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { getMIDIInputs } from './src/utils/midi-utils.js';
-import HelloWorld from './src/components/hello.jsx';
+import App from './src/components/app.jsx';
 import ErrorTile from './src/components/error.jsx';
 
-const renderApp = ({ inputs }) => {
-  return ReactDOM.render(<HelloWorld inputs={inputs} />, document.getElementById('root'));
-};
+const renderApp = ({ inputs }) => (
+  ReactDOM.render(<App inputs={inputs} />, document.getElementById('root'))
+);
 
 const renderError = (error) => (
   ReactDOM.render(<ErrorTile error={error} />, document.getElementById('root'))

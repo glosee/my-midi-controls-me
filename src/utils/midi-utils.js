@@ -20,6 +20,13 @@ const getMIDIInputs = (_navigator) => {
   return _navigator.requestMIDIAccess();
 };
 
+// Magic from here:
+// https://www.keithmcmillen.com/blog/making-music-in-the-browser-web-midi-api/
+const frequencyFromNoteNumber = note => (
+  440 * Math.pow(2, (note - 69) / 12)
+)
+
 export {
   getMIDIInputs,
+  frequencyFromNoteNumber,
 }
