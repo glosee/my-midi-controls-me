@@ -15,6 +15,8 @@ class App extends React.Component {
       waveType: 'sawtooth',
     };
     this.audioContext = new AudioContext();
+    this.gain = null;
+    this.osc = null;
   }
 
   /****************************************
@@ -22,25 +24,43 @@ class App extends React.Component {
   ****************************************/
 
   _createContext() {
-      this._createGain();
-      this._createOsc();
-      this._setGain(1);
-      this._connectAndStartOsc();
+    this._destroyContext();
+    this._createGain();
+    this._createOsc();
+    this._setGain(1);
+    this._connectAndStartOsc();
   }
 
   _createGain() {
+    if (this.gain) {
+      this._cleanupGain();
+    }
     this.gain = this.audioContext.createGain();
   }
 
+  _cleanupGain() {
+    this.gain = null;
+  }
+
   _createOsc() {
+    // Clear if one already exists
+    if (this.osc) {
+      this._cleanupOsc();
+    }
     this.osc = this.audioContext.createOscillator();
     this.osc.type = this.state.waveType;
     this.osc.frequency.value = DEFAULT_FREQ;
     this.osc.detune.value = DEFAULT_DETUNE;
   }
 
+  _cleanupOsc() {
+    this.osc.stop();
+    this.osc = null;
+  }
+
   _connectAndStartOsc() {
     this.osc.connect(this.gain);
+    // Start immediately
     this.osc.start(0);
   }
 
@@ -49,15 +69,17 @@ class App extends React.Component {
   }
 
   _destroyContext() {
-    this.osc = null;
-    this.gain = null;
+    if (this.gain) {
+      this._cleanupGain();
+    }
+
+    if (this.osc) {
+      this._cleanupOsc();
+    }
   }
 
   _startNoise() {
-    // Don't start more than one osc at a time
-    if (this.gain && this.osc) {
-      return;
-    }
+    // TODO: This always starts a new one even if nothing changed...
     this._createContext();
     this.gain.connect(this.audioContext.destination);
   }
