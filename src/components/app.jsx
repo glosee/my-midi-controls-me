@@ -1,26 +1,15 @@
 import classnames from 'classnames';
 import React from 'react';
 
+import StartStopControls from './audio-controls/start-stop-controls.jsx';
 import MIDIController from './midi-controller.jsx';
 
-const AudioControls = ({ children, parentClassName }) => {
-  const classNames = classnames(
-    "audio-controls",
-    { [parentClassName]: !!parentClassName}
-  );
-  return (
-    <div className={classNames}>
-      {children}
-    </div>
-  );
+const WAVE_TYPES = {
+  SAWTOOTH: 'sawtooth',
+  SINE: 'sine',
+  SQUARE: 'square',
+  TRIANGLE: 'triangle',
 };
-
-const StartStopControls = ({ onStart, onStop }) => (
-  <AudioControls parentClassName="audio-controls--start-stop">
-    <button className="audio-controls__control audio-controls__control--start" onClick={onStart}>start</button>
-    <button className="audio-controls__control audio-controls__control--stop" onClick={onStop}>stop</button>
-  </AudioControls>
-);
 
 class App extends React.Component {
 
@@ -28,11 +17,11 @@ class App extends React.Component {
     super();
     this.state = {
       playing: false,
+      waveType: 'sine',
     };
   }
 
   _onStart(e) {
-    console.log('on start', e);
     this.setState({ playing: true });
   }
 
