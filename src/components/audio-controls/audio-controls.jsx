@@ -18,7 +18,11 @@ const AudioControls = ({ children, parentClassName }) => {
 };
 
 AudioControls.propTypes = {
-  children: React.PropTypes.array.isRequired,
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.array,
+    React.PropTypes.object,
+    React.PropTypes.element,
+  ]).isRequired,
   parentClassName: React.PropTypes.string,
 };
 
