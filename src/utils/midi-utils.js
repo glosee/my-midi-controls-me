@@ -22,11 +22,11 @@ const getMIDIInputs = (_navigator) => {
 
 // Magic from here:
 // https://www.keithmcmillen.com/blog/making-music-in-the-browser-web-midi-api/
-const frequencyFromNoteNumber = note => (
+const frequencyFromNote = note => (
   440 * Math.pow(2, (note - 69) / 12)
 )
 
 export {
   getMIDIInputs,
-  frequencyFromNoteNumber,
+  frequencyFromNote,
 }

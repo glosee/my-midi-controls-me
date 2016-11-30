@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import React from 'react';
 
 import { DEFAULT_FREQ, DEFAULT_DETUNE } from '../utils/audio-utils.js';
+import { frequencyFromNote } from '../utils/midi-utils.js';
 import MIDIController from './midi-controller.jsx';
 import StartStopControls from './audio-controls/start-stop-controls.jsx';
 import WavePicker from './audio-controls/wave-picker.jsx';
@@ -78,6 +79,10 @@ class App extends React.Component {
     }
   }
 
+  /****************************************
+  ************ AUDIO FUNCTIONS ************
+  ****************************************/
+
   _startNoise() {
     // TODO: This always starts a new one even if nothing changed...
     this._createContext();
@@ -87,6 +92,15 @@ class App extends React.Component {
   _stopNoise() {
     this.gain && this.gain.disconnect(this.audioContext.destination);
     this._destroyContext();
+  }
+
+  _playNote(note, frequency) {
+    // TODO: For some reason notes are playing even when there is no osc
+    // connected to the AudioContext... can't figure out where that's coming
+    // from...
+    const now = this.audioContext.currentTime;
+    this.osc.frequency.cancelScheduledValues(0);
+    this.osc.frequency.setValueAtTime(frequencyFromNote(note), now);
   }
 
   /****************************************
@@ -111,7 +125,7 @@ class App extends React.Component {
     return (
       <div className="app-container">
         <h1>Hello, MIDI</h1>
-        <MIDIController inputs={this.props.inputs} />
+        <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
       </div>

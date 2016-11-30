@@ -43,6 +43,7 @@ class MIDIController extends React.Component {
 
   noteOn(note, velocity) {
     this.player(note, velocity);
+    this.props.playNote(note, velocity);
   }
 
   noteOff(note, velocity) {
