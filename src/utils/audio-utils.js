@@ -4,3 +4,6 @@ export const WAVE_TYPES = {
   SQUARE: 'square',
   TRIANGLE: 'triangle',
 };
+
+export const DEFAULT_FREQ = 440;
+export const DEFAULT_DETUNE = 0;
