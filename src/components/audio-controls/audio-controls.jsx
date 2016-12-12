@@ -8,7 +8,7 @@ import React from 'react';
 const AudioControls = ({ children, parentClassName }) => {
   const classNames = classnames(
     "audio-controls",
-    { [parentClassName]: !!parentClassName}
+    { [parentClassName]: !!parentClassName }
   );
   return (
     <div className={classNames}>

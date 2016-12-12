@@ -8,8 +8,9 @@ It is a learning exercise in the Web MIDI and Web Audio APIs.
 
 * ~~Create sounds in the browser~~
 * ~~Capture MIDI input in the browser from my keyboard~~
-* Map MIDI input to notes
-* Ability to change wave form type
+* ~~Map MIDI input to notes~~
+* ~~Ability to change wave form type~~
+* Play notes with the qwerty keyboard
 
 ### Stretch
 
