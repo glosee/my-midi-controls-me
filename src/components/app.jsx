@@ -4,6 +4,7 @@ import React from 'react';
 import { DEFAULT_FREQ, DEFAULT_DETUNE } from '../utils/audio-utils.js';
 import { frequencyFromNote } from '../utils/midi-utils.js';
 import MIDIController from './midi-controller.jsx';
+import RandomizerControls from './audio-controls/randomizer-control.jsx';
 import StartStopControls from './audio-controls/start-stop-controls.jsx';
 import WavePicker from './audio-controls/wave-picker.jsx';
 
@@ -14,6 +15,7 @@ class App extends React.Component {
     this.state = {
       playing: false,
       waveType: 'sawtooth',
+      isRandomized: false,
     };
     this.audioContext = new AudioContext();
     this.gain = null;
@@ -94,7 +96,7 @@ class App extends React.Component {
     this._destroyContext();
   }
 
-  _playNote(note, frequency) {
+  _playNote(note) {
     // TODO: For some reason notes are playing even when there is no osc
     // connected to the AudioContext... can't figure out where that's coming
     // from...
@@ -113,11 +115,36 @@ class App extends React.Component {
 
   _onStop(e) {
     this.setState({ playing: false });
+    this._clearRandomizerInterval();
   }
 
   _setWaveType(evt) {
     const type = evt.target.value || 'sine';
     this.setState({ waveType: type });
+  }
+
+  _onRandomizeTouch() {
+    if (this.state.isRandomized) {
+      this.setState({ isRandomized: false });
+      this.interval && clearInterval(this.interval);
+    } else {
+      this.setState({ isRandomized: true });
+      this._doRandomize();
+    }
+  }
+
+  _doRandomize() {
+    console.log('is randomized!');
+    const blink = () => {
+      const freq = (Math.random() * 750);
+      console.log('blink', freq);
+      this.osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+    }
+    this.interval = setInterval(blink, 200);
+  }
+
+  _clearRandomizerInterval() {
+    clearInterval(this.interval);
   }
 
   render() {
@@ -127,6 +154,7 @@ class App extends React.Component {
         <h1>Hello Audio</h1>
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
+        <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
       </div>
     )
