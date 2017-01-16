@@ -17,9 +17,12 @@ class App extends React.Component {
       waveType: 'sawtooth',
       isRandomized: false,
     };
+    // Few things removed from state because we don't want to re-render every time
+    // user changes the rate of randomization, or if we need to create a new context.
     this.audioContext = new AudioContext();
     this.gain = null;
     this.osc = null;
+    this.randomInterval = 200;
   }
 
   /****************************************
@@ -30,7 +33,7 @@ class App extends React.Component {
     this._destroyContext();
     this._createGain();
     this._createOsc();
-    this._setGain(1);
+    this._setGain(0.35);
     this._connectAndStartOsc();
   }
 
@@ -114,7 +117,7 @@ class App extends React.Component {
   }
 
   _onStop(e) {
-    this.setState({ playing: false });
+    this.setState({ playing: false, isRandomized: false });
     this._clearRandomizerInterval();
   }
 
@@ -126,7 +129,7 @@ class App extends React.Component {
   _onRandomizeTouch() {
     if (this.state.isRandomized) {
       this.setState({ isRandomized: false });
-      this.interval && clearInterval(this.interval);
+      this._clearRandomizerInterval();
     } else {
       this.setState({ isRandomized: true });
       this._doRandomize();
@@ -134,17 +137,25 @@ class App extends React.Component {
   }
 
   _doRandomize() {
-    console.log('is randomized!');
+    // Clear before restarting just to be safe
+    this._clearRandomizerInterval();
     const blink = () => {
       const freq = (Math.random() * 750);
-      console.log('blink', freq);
       this.osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
     }
-    this.interval = setInterval(blink, 200);
+    this.interval = setInterval(blink, this.randomInterval);
+    console.log('randomizing (re)started at rate', this.randomInterval);
   }
 
   _clearRandomizerInterval() {
-    clearInterval(this.interval);
+    console.log('stop randomizing!');
+    this.interval && clearInterval(this.interval);
+  }
+
+  _onRateChange(e) {
+    console.log('randomized rate changed', e.target.value);
+    this.randomInterval = e.target.value;
+    this._doRandomize();
   }
 
   render() {
@@ -154,7 +165,7 @@ class App extends React.Component {
         <h1>Hello Audio</h1>
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
-        <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} />
+        <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} onRateChange={this._onRateChange.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
       </div>
     )
