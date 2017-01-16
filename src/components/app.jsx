@@ -124,7 +124,7 @@ class App extends React.Component {
     this.state.playing ? this._startNoise() : this._stopNoise();
     return (
       <div className="app-container">
-        <h1>Hello, MIDI</h1>
+        <h1>Hello Audio</h1>
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />

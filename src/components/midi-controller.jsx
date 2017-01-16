@@ -18,10 +18,6 @@ class MIDIController extends React.Component {
   }
 
   onMIDIMessage(msg) {
-    // if(msg.data[0] === 248) {
-    //   return;
-    // }
-    // this.setState({ messages: this.state.messages.concat([msg]) });
     const { data } = msg;
     const cmd = data[0] >> 4;
     const channel  = data[0] & 0xf;
@@ -64,15 +60,28 @@ class MIDIController extends React.Component {
     }
   }
 
+  _noMidiInputs() {
+    return (
+      <div className="midi-controller__no-inputs-message">
+        <p>There are no MIDI inputs detected. Please ensure your MIDI controller is detected by your computer, and try refreshing the browser window.</p>
+        <p>You can still play with the browser controls mind you. Have at 'er.</p>
+      </div>
+    );
+  }
+
+  _midiMessages() {
+    <div className="midi-controller__message-centre">
+      <h2>I am a MIDI Controller</h2>
+      <ul>
+        {this.state.messages.map((msg, id) => <li key={`midi-message-${id}`}>{msg.toString()}</li>)}
+      </ul>
+    </div>
+  }
+
   render() {
-    console.log(this.state.messages);
     return (
       <div className="midi-controller">
-        <h2>I am a MIDI Controller</h2>
-        <ul>
-          {/* lazy assumptions */}
-          {this.state.messages.map((msg, id) => <li key={`midi-message-${id}`}>{msg.toString()}</li>)}
-        </ul>
+        {this.props.inputs.size === 0 ? this._noMidiInputs() : this._midiMessages()}
       </div>
     );
   }
