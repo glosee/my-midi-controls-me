@@ -1,9 +1,10 @@
 import classnames from 'classnames';
 import React from 'react';
 
-import { DEFAULT_FREQ, DEFAULT_DETUNE } from '../utils/audio-utils.js';
+import { DEFAULT_FREQ, DEFAULT_DETUNE, INITIAL_GAIN } from '../utils/audio-utils.js';
 import { frequencyFromNote } from '../utils/midi-utils.js';
 import MIDIController from './midi-controller.jsx';
+import GainControl from './audio-controls/gain-control.jsx';
 import RandomizerControls from './audio-controls/randomizer-control.jsx';
 import StartStopControls from './audio-controls/start-stop-controls.jsx';
 import WavePicker from './audio-controls/wave-picker.jsx';
@@ -23,6 +24,7 @@ class App extends React.Component {
     this.gain = null;
     this.osc = null;
     this.randomInterval = 200;
+    this.currentGain = INITIAL_GAIN;
   }
 
   /****************************************
@@ -33,7 +35,7 @@ class App extends React.Component {
     this._destroyContext();
     this._createGain();
     this._createOsc();
-    this._setGain(0.35);
+    this._setAudioGain(this.currentGain);
     this._connectAndStartOsc();
   }
 
@@ -70,8 +72,12 @@ class App extends React.Component {
     this.osc.start(0);
   }
 
-  _setGain(val) {
+  _setAudioGain(val) {
     this.gain.gain.value = val;
+  }
+
+  _mute() {
+    this._setAudioGain(0);
   }
 
   _destroyContext() {
@@ -147,28 +153,49 @@ class App extends React.Component {
       this.osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
     }
     this.interval = setInterval(blink, this.randomInterval);
-    console.log('randomizing (re)started at rate', this.randomInterval);
   }
 
   _clearRandomizerInterval() {
-    console.log('stop randomizing!');
     this.interval && clearInterval(this.interval);
   }
 
-  _onRateChange(e) {
-    console.log('randomized rate changed', e.target.value);
-    this.randomInterval = e.target.value;
+  _onRateChange(val) {
+    this.randomInterval = val;
     this._doRandomize();
+  }
+  
+  _toggleMute(doMute = false) {
+    if (!this.state.playing) {
+      return;
+    }
+    if (doMute) {
+      this._mute();
+    } else {
+      this._changeGain(this.currentGain);
+    }
+  }
+
+  /**
+   * This separate method for changing the gain is to be able to update the currentGain separately
+   * from the gain on the AudioNode. Necessary because we also use `_setAudioGain` for muting.
+   */
+  _changeGain(val = INITIAL_GAIN) {
+    const typedVal = Number(val);
+    this.currentGain = typedVal;
+    if (this.state.playing) {
+      this._setAudioGain(typedVal);
+    }
   }
 
   render() {
     this.state.playing ? this._startNoise() : this._stopNoise();
     return (
       <div className="app-container">
-        <h1>Hello Audio</h1>
+        <h1>Hello Dickwad</h1>
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
         <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} onRateChange={this._onRateChange.bind(this)} />
+        <GainControl initial={this.currentGain} onChange={this._changeGain.bind(this)} mute={this._toggleMute.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
       </div>
     )
