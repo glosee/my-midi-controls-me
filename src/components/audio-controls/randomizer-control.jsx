@@ -17,15 +17,16 @@ class RandomizerControls extends React.Component {
     };
 
     onRateChange(e) {
-        this.setState({ value: e.target.value });
-        this.props.onRateChange(e);
+        const val = e.target.value;
+        this.setState({ value: val });
+        this.props.onRateChange(val);
     }
 
     _randomizedControls(onTouch, value) {
         return [
-            <button className="audio-controls__control audio-controls__control--randomizer" onClick={onTouch}>Normalize</button>,
-            <label htmlFor="randomrate">
-                Randomization rate: <input id="randomrate" name="randomrate" type="range" min={MIN_RATE} max={MAX_RATE} step={STEP_RATE} onChange={this.onRateChange.bind(this)} />
+            <button key="normalize-button" className="audio-controls__control audio-controls__control--randomizer" onClick={onTouch}>Normalize</button>,
+            <label key="randomrate-range" htmlFor="randomrate">
+                Rate (ms): <input id="randomrate" name="randomrate" type="range" min={MIN_RATE} max={MAX_RATE} step={STEP_RATE} onChange={this.onRateChange.bind(this)} />
                 <output htmlFor="randomrate">{value}</output>
             </label>,
         ];

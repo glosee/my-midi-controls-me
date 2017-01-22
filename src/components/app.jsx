@@ -137,6 +137,9 @@ class App extends React.Component {
   }
 
   _doRandomize() {
+    if (!this.state.playing) {
+      return;
+    }
     // Clear before restarting just to be safe
     this._clearRandomizerInterval();
     const blink = () => {
