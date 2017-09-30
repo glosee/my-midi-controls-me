@@ -7,7 +7,7 @@ import MultiApp from './src/components/multi-app.jsx';
 import ErrorTile from './src/components/error.jsx';
 
 const renderApp = ({ inputs }) => {
-  ReactDOM.render(<MultiApp inputs={inputs} />, document.getElementById('root'))
+  ReactDOM.render(<MultiApp inputs={inputs} numOscillators={6} />, document.getElementById('root'))
 };
 
 const renderError = (error) => {

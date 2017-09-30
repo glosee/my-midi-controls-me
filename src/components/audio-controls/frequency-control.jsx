@@ -2,8 +2,8 @@ import React from 'react';
 
 import AudioControls from './audio-controls.jsx';
 
-const MAX_RATE = 261.63; // C2
-const MIN_RATE = 65.41;  // C4
+const MAX_RATE = 1046.50; // C6
+const MIN_RATE = 65.41;  // C2
 const STEP_RATE = 1;
 
 class RandomizerControls extends React.Component {
