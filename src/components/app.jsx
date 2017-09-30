@@ -4,7 +4,8 @@ import React from 'react';
 import { DEFAULT_FREQ, DEFAULT_DETUNE, INITIAL_GAIN } from '../utils/audio-utils.js';
 import { frequencyFromNote } from '../utils/midi-utils.js';
 import MIDIController from './midi-controller.jsx';
-import GainControl from './audio-controls/gain-control.jsx';
+// import GainControl from './audio-controls/gain-control.jsx';
+import FrequencyControls from './audio-controls/frequency-control.jsx';
 import RandomizerControls from './audio-controls/randomizer-control.jsx';
 import StartStopControls from './audio-controls/start-stop-controls.jsx';
 import WavePicker from './audio-controls/wave-picker.jsx';
@@ -163,7 +164,7 @@ class App extends React.Component {
     this.randomInterval = val;
     this._doRandomize();
   }
-  
+
   _toggleMute(doMute = false) {
     if (!this.state.playing) {
       return;
@@ -187,6 +188,10 @@ class App extends React.Component {
     }
   }
 
+  _onFrequencyChange(value) {
+    this.osc.frequency.setValueAtTime(value, this.audioContext.currentTime);
+  }
+
   render() {
     this.state.playing ? this._startNoise() : this._stopNoise();
     return (
@@ -195,7 +200,7 @@ class App extends React.Component {
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
         <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} onRateChange={this._onRateChange.bind(this)} />
-        <GainControl initial={this.currentGain} onChange={this._changeGain.bind(this)} mute={this._toggleMute.bind(this)} />
+        <FrequencyControls onFrequencyChange={this._onFrequencyChange.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
       </div>
     )
