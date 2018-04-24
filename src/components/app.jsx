@@ -21,7 +21,7 @@ class App extends React.Component {
     };
     // Few things removed from state because we don't want to re-render every time
     // user changes the rate of randomization, or if we need to create a new context.
-    this.audioContext = new AudioContext();
+    this.audioContext = null;
     this.gain = null;
     this.osc = null;
     this.randomInterval = 200;
@@ -34,6 +34,7 @@ class App extends React.Component {
 
   _createContext() {
     this._destroyContext();
+    this.audioContext = new AudioContext();
     this._createGain();
     this._createOsc();
     this._setAudioGain(this.currentGain);
@@ -89,6 +90,10 @@ class App extends React.Component {
     if (this.osc) {
       this._cleanupOsc();
     }
+
+    if (this.audioContext) {
+      this.audioContext = null;
+    }
   }
 
   /****************************************
@@ -110,7 +115,7 @@ class App extends React.Component {
     // TODO: For some reason notes are playing even when there is no osc
     // connected to the AudioContext... can't figure out where that's coming
     // from...
-    const now = this.audioContext.currentTime;
+    const now = this.audioContext ? this.audioContext.currentTime : 0;
     this.osc.frequency.cancelScheduledValues(0);
     this.osc.frequency.setValueAtTime(frequencyFromNote(note), now);
   }
@@ -196,7 +201,7 @@ class App extends React.Component {
     this.state.playing ? this._startNoise() : this._stopNoise();
     return (
       <div className="app-container">
-        <h1>Hello Dickwad</h1>
+        <h1>Hello Oscilator</h1>
         <MIDIController inputs={this.props.inputs} playNote={this._playNote.bind(this)} />
         <StartStopControls onStart={this._onStart.bind(this)} onStop={this._onStop.bind(this)} />
         <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} onRateChange={this._onRateChange.bind(this)} />

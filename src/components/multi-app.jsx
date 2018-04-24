@@ -2,9 +2,9 @@ import React from 'react';
 
 import App from './app.jsx';
 
-const MultiApp = ({inputs, numOscillators}) => {
+const MultiApp = ({ inputs, numOscillators }) => {
   const makeApps = () => {
-    const apps  = [];
+    const apps = [];
     for (let i = 0; i < numOscillators; i++) {
       apps.push(<App inputs={inputs} key={`app-${i}`}/>);
     }
