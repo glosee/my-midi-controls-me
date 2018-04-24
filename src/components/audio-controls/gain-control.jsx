@@ -20,48 +20,49 @@ const MuteButton = ({onTouch, isMuted}) => {
 // );
 
 class GainControl extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            value: 0,
-            isMuted: false,
-        };
-    }
+  constructor() {
+    super();
+    this.state = {
+      value: 0,
+      isMuted: false,
+    };
+  }
 
-    // componentWillReceiveProps(props) {
-    //     this.setState({ value: props.initial });
-    // }
+  // componentWillReceiveProps(props) {
+  //     this.setState({ value: props.initial });
+  // }
 
-    // _onChange(e) {
-    //     const val =  e.target.value;
-    //     this.props.onChange(val);
-    //     this.setState({ value: val });
-    // }
+  // _onChange(e) {
+  //     const val =  e.target.value;
+  //     this.props.onChange(val);
+  //     this.setState({ value: val });
+  // }
 
-    _onMuteTouch(e) {
-        const muted = !this.state.isMuted;
-        this.props.mute(muted);
-        this.setState({ isMuted: muted });
-    }
+  _onMuteTouch(e) {
+    const muted = !this.state.isMuted;
+    this.props.mute(muted);
+    this.setState({ isMuted: muted });
+  }
 
-    render() {
-        const { value, isMuted } = this.state;
-        return (
-            <AudioControls parentClassName="audio-controls--gain">
-                <MuteButton onTouch={this._onMuteTouch.bind(this)} isMuted={isMuted} />
-                <RangeControl
-                    onChange={this.props.onChange}
-                    id='gain-control'
-                />
-            </AudioControls>
-        );
-    }
+  render() {
+    const { value, isMuted } = this.state;
+    return (
+      <AudioControls parentClassName="audio-controls--gain">
+        <MuteButton onTouch={this._onMuteTouch.bind(this)} isMuted={isMuted} />
+        <RangeControl
+            onChange={this.props.onChange}
+            id='gain-control'
+            initialValue={1}
+        />
+      </AudioControls>
+    );
+  }
 }
 
 GainControl.propTypes = {
-    initial: React.PropTypes.number,
-    onChange: React.PropTypes.func.isRequired,
-    mute: React.PropTypes.func.isRequired,
+  initial: React.PropTypes.number,
+  onChange: React.PropTypes.func.isRequired,
+  mute: React.PropTypes.func.isRequired,
 };
 
 export default GainControl;

@@ -4,7 +4,7 @@ import React from 'react';
 import { DEFAULT_FREQ, DEFAULT_DETUNE, INITIAL_GAIN } from '../utils/audio-utils.js';
 import { frequencyFromNote } from '../utils/midi-utils.js';
 import MIDIController from './midi-controller.jsx';
-// import GainControl from './audio-controls/gain-control.jsx';
+import GainControl from './audio-controls/gain-control.jsx';
 import FrequencyControls from './audio-controls/frequency-control.jsx';
 import RandomizerControls from './audio-controls/randomizer-control.jsx';
 import StartStopControls from './audio-controls/start-stop-controls.jsx';
@@ -207,6 +207,7 @@ class App extends React.Component {
         <RandomizerControls onTouch={this._onRandomizeTouch.bind(this)} isRandomized={this.state.isRandomized} onRateChange={this._onRateChange.bind(this)} />
         <FrequencyControls onFrequencyChange={this._onFrequencyChange.bind(this)} />
         <WavePicker selectedWaveType={this.state.waveType} onChange={this._setWaveType.bind(this)} />
+        <GainControl onChange={this._changeGain.bind(this)} initial={0.25} mute={() => {}}/>
       </div>
     )
   }

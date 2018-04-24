@@ -5,7 +5,7 @@ import App from './app.jsx';
 const MultiApp = ({ inputs, numOscillators }) => {
   const makeApps = () => {
     const apps = [];
-    for (let i = 0; i < numOscillators; i++) {
+    for (let i = 0; i < numOscillators; i += 1) {
       apps.push(<App inputs={inputs} key={`app-${i}`}/>);
     }
     return apps;
